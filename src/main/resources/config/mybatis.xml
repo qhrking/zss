@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <typeAliases>
+    <!-- 给实体Bean一个别名 -->
+    <typeAlias alias="MapContainer" type="com.zss.core.plugin.MapContainer" />
+    <typeAlias alias="PageModel" type="com.zss.core.plugin.PageModel" />
+    
+    <typeAlias alias="User" type="com.zss.core.dal.entity.User" />
+    <typeAlias alias="Channel" type="com.zss.core.dal.entity.Channel" />
+    <typeAlias alias="Post" type="com.zss.core.dal.entity.Post" />
+    <typeAlias alias="Upload" type="com.zss.core.dal.entity.Upload" />
+    <typeAlias alias="Link" type="com.zss.core.dal.entity.Link" />
+    <typeAlias alias="Comment" type="com.zss.core.dal.entity.Comment" />
+    <typeAlias alias="Option" type="com.zss.core.dal.entity.Option" />
+    <typeAlias alias="App" type="com.zss.core.dal.entity.App" />
+    <typeAlias alias="Category" type="com.zss.core.dal.entity.Category" />
+    
+    <typeAlias alias="PostVO" type="com.zss.service.vo.PostVO" />
+    <typeAlias alias="PageVO" type="com.zss.service.vo.PageVO" />
+    <typeAlias alias="CommentVO" type="com.zss.service.vo.CommentVO" />
+    <typeAlias alias="UploadVO" type="com.zss.service.vo.UploadVO" />
+    <typeAlias alias="AppVO" type="com.zss.service.vo.AppVO" />
+  </typeAliases>
+  <mappers>
+    <mapper resource="mybatis/UserMapper.xml" />
+    <mapper resource="mybatis/ChannelMapper.xml" />
+    <mapper resource="mybatis/PostMapper.xml" />
+    <mapper resource="mybatis/UploadMapper.xml" />
+    <mapper resource="mybatis/LinkMapper.xml" />
+    <mapper resource="mybatis/CommentMapper.xml" />
+    <mapper resource="mybatis/OptionMapper.xml" />
+    <mapper resource="mybatis/TagMapper.xml" />
+    <mapper resource="mybatis/AppMapper.xml" />
+    <mapper resource="mybatis/CategoryMapper.xml" />
+  </mappers>
+</configuration>

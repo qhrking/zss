@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zss.core.dal.mapper.AppMapper">
+    <resultMap id="BaseResultMap" type="com.zss.core.dal.entity.App" >
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="icon" column="icon" jdbcType="VARCHAR" />
+        <result property="qrcode" column="qrcode" jdbcType="VARCHAR" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="pics" column="pics" jdbcType="VARCHAR" />
+        <result property="tags" column="tags" jdbcType="VARCHAR" />
+        <result property="author" column="author" jdbcType="VARCHAR" />
+        <result property="score" column="score" jdbcType="INTEGER" />
+        <result property="viewCount" column="view_count" jdbcType="INTEGER" />
+        <result property="collectionCount" column="collection_count" jdbcType="INTEGER" />
+        <result property="isRecommend" column="is_recommend" jdbcType="INTEGER" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="creator" column="creator" jdbcType="INTEGER" />
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="AppVOResultMap" type="com.zss.service.vo.AppVO" extends="BaseResultMap">
+        <association property="user" column="creator" javaType="com.zss.core.dal.entity.User" select="com.zss.core.dal.mapper.UserMapper.loadById"/>
+        <collection property="categorys" column="id" javaType="list" ofType="com.zss.core.dal.entity.Category" select="com.zss.core.dal.mapper.CategoryMapper.listByAppId" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id,name,icon,qrcode,description,pics,score,tags,author,view_count,collection_count,is_recommend,status,creator,update_time,create_time
+    </sql>
+
+
+    <select id="loadById" parameterType="java.lang.Integer"  resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app where id = #{id} AND status=1
+    </select>
+
+    <select id="getAppVOById" parameterType="java.lang.Integer"  resultMap="AppVOResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app where id = #{id} AND status=1
+    </select>
+
+    <select id="list" parameterType="PageModel"  resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app where status=1
+    </select>
+
+    <select id="count" resultType="long">
+        select count(*) from wx_app where status=1
+    </select>
+
+    <select id="listByCondition" parameterType="PageModel"  resultMap="AppVOResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app
+        <if test="null !=query.map.categoryId">
+            LEFT JOIN wx_app_category ON wx_app_category.app_id =wx_app.id
+        </if>
+        <where>
+            status=1
+            <if test="null !=query.map.categoryId">
+                AND   wx_app_category.category_id=#{query.map.categoryId}
+            </if>
+            <if test="null !=query.map.keyword">
+                AND   wx_app.name LIKE CONCAT('%',#{query.map.keyword},'%')
+            </if>
+        </where>
+        <if test="query.map.orderType==1">/*最新*/
+            ORDER BY wx_app.create_time DESC
+        </if>
+        <if test="query.map.orderType==2">/*热度*/
+            ORDER BY (wx_app.view_count+wx_app.collection_count*5) DESC
+        </if>
+        <if test="query.map.orderType==3">/*推荐*/
+            ORDER BY wx_app.is_recommend DESC , wx_app.create_time DESC
+        </if>
+    </select>
+
+    <select id="listByName" parameterType="java.lang.String"  resultMap="AppVOResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app where name = #{name}
+    </select>
+
+
+    <select id="listHot" parameterType="PageModel"  resultMap="AppVOResultMap">
+        select  <include refid="Base_Column_List" /> from wx_app
+        <where>
+            status =1
+            <if test="null !=query.map.categoryId">
+                AND   category_id =#{query.map.categoryId}
+            </if>
+        </where>
+        ORDER BY (view_count+collection_count*5) DESC
+    </select>
+
+    <insert id="insert" parameterType="App" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into wx_app(name,icon,qrcode,description,pics,score,tags,author,view_count,collection_count,is_recommend,status,creator,update_time,create_time)
+        values(#{name},#{icon},#{qrcode},#{description},#{pics},#{score},#{tags},#{author},#{viewCount},#{collectionCount},#{isRecommend},#{status},#{creator},#{updateTime},#{createTime})
+    </insert>
+
+    <update id="update" parameterType="App">
+        update wx_app set name=#{name},icon=#{icon},qrcode=#{qrcode},description=#{description},pics=#{pics},score=#{score},tags=#{tags},author=#{author},view_count=#{viewCount},collection_count=#{collectionCount},is_recommend=#{isRecommend},status=#{status},creator=#{creator},update_time=#{updateTime},description=#{description}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from wx_app where id = #{id}
+    </delete>
+
+</mapper>

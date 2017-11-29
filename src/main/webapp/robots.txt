@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /backend/
+Disallow: /resource/
+Disallow: /xmlrpc/
+Disallow: /api/
+Sitemap: http://www.haoapp.mobi/sitemap.xml
